@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { jwtDecode } from 'jwt-decode';
 
-
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
@@ -37,11 +36,7 @@ const Login = () => {
         setMessage('Login successful. Redirecting...');
 
         setTimeout(() => {
-          if (role === 'admin') {
-            navigate('/admin/');
-          } else {
-            navigate('/dashboard');
-          }
+          navigate(role === 'admin' ? '/admin/' : '/dashboard');
         }, 1000);
       } else {
         setMessage(data.error || 'Login failed');
@@ -57,26 +52,26 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center bg-gray-100 px-4 py-8">
       {/* Left Side */}
-      <div className="absolute left-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8 text-center">
-        <div className="space-y-4">
-          <h2 className="text-4xl font-extrabold text-gray-700 animate__animated animate__fadeIn animate__delay-1s">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-12">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl lg:text-4xl font-extrabold text-gray-700">
             Welcome to Facteyes Data Marketplace
           </h2>
-          <p className="text-lg text-gray-500 animate__animated animate__fadeIn animate__delay-2s">
+          <p className="text-md lg:text-lg text-gray-500">
             Discover powerful data solutions to elevate your business.
           </p>
         </div>
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-center p-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-12">
         <form
           onSubmit={handleSubmit}
-          className="z-10 w-full max-w-md p-10 bg-white rounded-2xl shadow-xl border border-gray-200"
+          className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl border border-gray-200"
         >
-          <h2 className="text-3xl font-extrabold text-center text-indigo-700 mb-6">
+          <h2 className="text-2xl lg:text-3xl font-extrabold text-center text-indigo-700 mb-6">
             Welcome Back 👋
           </h2>
 
@@ -94,7 +89,6 @@ const Login = () => {
             required
           />
 
-          {/* Password with toggle */}
           <div className="relative mb-6">
             <input
               type={showPassword ? 'text' : 'password'}

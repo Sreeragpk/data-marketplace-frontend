@@ -48,36 +48,36 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-between bg-gray-100">
+    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gray-100 px-4 py-10">
       {/* Left Side Content */}
-      <div className="w-1/2 flex flex-col justify-center px-12 space-y-6">
-        <div className="animate-fadeInUp">
-          <h2 className="text-4xl font-extrabold text-gray-800 mb-2">
+      <div className="w-full md:w-1/2 mb-10 md:mb-0 md:pr-12 space-y-6 text-center md:text-left">
+        <div>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-800 mb-2">
             Join Facteyes Data Marketplace 🚀
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600">
             Unlock access to exclusive datasets and grow with insight.
           </p>
-          <p className="text-md text-gray-500">
+          <p className="text-sm sm:text-md text-gray-500">
             Collaborate, monetize, and explore a decentralized data ecosystem.
           </p>
         </div>
 
         {/* SVG Icons */}
-        <div className="grid grid-cols-3 gap-4 pt-4">
+        <div className="grid grid-cols-3 gap-4 justify-center md:justify-start pt-4">
           <div className="animate-bounce">
-            <svg className="w-16 h-16 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 sm:w-16 sm:h-16 text-indigo-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 10h4l3 8 4-16 3 8h4" />
             </svg>
           </div>
           <div className="animate-pulse">
-            <svg className="w-16 h-16 text-purple-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 sm:w-16 sm:h-16 text-purple-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 20l9-5-9-5-9 5 9 5z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 12l9-5-9-5-9 5 9 5z" />
             </svg>
           </div>
           <div className="animate-bounce">
-            <svg className="w-16 h-16 text-pink-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
+            <svg className="w-12 h-12 sm:w-16 sm:h-16 text-pink-500" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="9" strokeDasharray="56.5487" strokeDashoffset="20" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
             </svg>
@@ -86,8 +86,10 @@ const Signup = () => {
       </div>
 
       {/* Right Side Form */}
-      <div className="w-full max-w-md p-10 bg-white rounded-2xl shadow-xl border border-gray-200 mr-16">
-        <h2 className="text-3xl font-extrabold text-center text-indigo-700 mb-6">Create Your Account</h2>
+      <div className="w-full max-w-md p-8 sm:p-10 bg-white rounded-2xl shadow-xl border border-gray-200">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-center text-indigo-700 mb-6">
+          Create Your Account
+        </h2>
 
         {message && (
           <div

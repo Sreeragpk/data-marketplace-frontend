@@ -19,25 +19,28 @@ const Home = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-black transition-colors">
       {/* Navbar */}
-      <header className="w-full flex justify-between items-center px-8 py-6 bg-white dark:bg-gray-800 shadow-md">
-        <h1 className="text-2xl font-bold text-blue-600 dark:text-teal-400">
+      <header className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center px-4 sm:px-6 py-4 bg-white dark:bg-gray-800 shadow-md gap-4 sm:gap-0">
+        <h1 className="text-2xl font-bold text-blue-600 dark:text-teal-400 text-center sm:text-left">
           Factyes Data Marketplace
         </h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-center sm:justify-end gap-4">
           <button
             onClick={() => setDarkMode(!darkMode)}
-            className="w-10 h-10 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full transition hover:scale-105"
+            className="w-12 h-12 sm:w-10 sm:h-10 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full transition hover:scale-105"
             title="Toggle dark mode"
           >
             {darkMode ? "🌙" : "☀️"}
           </button>
-          <nav className="space-x-4">
-            <Link to="/Login" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-teal-400">
+          <nav className="space-x-2">
+            <Link
+              to="/Login"
+              className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-teal-400"
+            >
               Login
             </Link>
             <Link
               to="/Signup"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 dark:bg-teal-500 dark:hover:bg-teal-600"
+              className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 dark:bg-teal-500 dark:hover:bg-teal-600"
             >
               Sign Up
             </Link>
@@ -48,23 +51,23 @@ const Home = () => {
       {/* Main Content */}
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="text-center px-6 py-20 w-full max-w-screen-xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-white mb-6 leading-tight">
+        <section className="text-center px-4 sm:px-6 py-16 sm:py-20 w-full max-w-screen-xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-white mb-6 leading-tight">
             Discover, Buy, and Sell Quality Datasets
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-8">
             A trusted marketplace for data enthusiasts, researchers, and businesses. Upload, monetize, or access valuable datasets with ease.
           </p>
           <Link
             to="/signup"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-blue-700 dark:bg-teal-500 dark:hover:bg-teal-600 transition"
+            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 dark:bg-teal-500 dark:hover:bg-teal-600 transition"
           >
             Get Started
           </Link>
         </section>
 
         {/* Features Section */}
-        <section className="grid md:grid-cols-3 gap-8 px-6 pb-20 w-full max-w-screen-xl mx-auto">
+        <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 px-4 sm:px-6 pb-16 sm:pb-20 w-full max-w-screen-xl mx-auto">
           {[
             {
               title: "Secure Uploads",
@@ -87,7 +90,9 @@ const Home = () => {
               className="bg-white dark:bg-gray-800 rounded-2xl shadow-md p-6 text-center hover:shadow-lg transition"
             >
               <div className="text-4xl mb-4">{icon}</div>
-              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">{title}</h3>
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
+                {title}
+              </h3>
               <p className="text-gray-600 dark:text-gray-300">{description}</p>
             </div>
           ))}
@@ -103,6 +108,7 @@ const Home = () => {
 };
 
 export default Home;
+
 
 // import { Link } from "react-router-dom";
 
