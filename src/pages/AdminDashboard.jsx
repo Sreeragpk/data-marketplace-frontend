@@ -33,7 +33,7 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch("data-marketplace-backend-production.up.railway.app/api/admin/stats", {
+      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/stats", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
   const fetchRecentPurchases = async () => {
     try {
       const res = await fetch(
-        "data-marketplace-backend-production.up.railway.app/api/admin/recent-purchases",
+        "https://data-marketplace-backend-production.up.railway.app/api/admin/recent-purchases",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -66,7 +66,7 @@ const AdminDashboard = () => {
 
   const fetchDatasets = async () => {
     try {
-      const res = await fetch("data-marketplace-backend-production.up.railway.app/api/admin/datasets", {
+      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/datasets", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -79,7 +79,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("data-marketplace-backend-production.up.railway.app/api/admin/users", {
+      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -92,7 +92,7 @@ const AdminDashboard = () => {
 
   const deleteDataset = async (id) => {
     if (!window.confirm("Delete this dataset?")) return;
-    await fetch(`data-marketplace-backend-production.up.railway.app/api/admin/datasets/${id}`, {
+    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/admin/datasets/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -101,7 +101,7 @@ const AdminDashboard = () => {
 
   const deleteUser = async (id) => {
     if (!window.confirm("Delete this user?")) return;
-    await fetch(`data-marketplace-backend-production.up.railway.app/api/admin/users/${id}`, {
+    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/admin/users/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -112,7 +112,7 @@ const AdminDashboard = () => {
     const newRole = currentRole === "admin" ? "user" : "admin";
     if (!window.confirm(`Change role to ${newRole}?`)) return;
 
-    await fetch(`data-marketplace-backend-production.up.railway.app/api/admin/users/${id}/role`, {
+    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/admin/users/${id}/role`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

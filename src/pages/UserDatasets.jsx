@@ -10,7 +10,7 @@ const UserDatasets = () => {
 
   const fetchUserDatasets = async () => {
     try {
-      const res = await fetch('data-marketplace-backend-production.up.railway.app/api/datasets/user', {
+      const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/datasets/user', {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -22,7 +22,7 @@ const UserDatasets = () => {
 
   const deleteDataset = async (id) => {
     if (!window.confirm('Are you sure you want to delete this dataset?')) return;
-    await fetch(`data-marketplace-backend-production.up.railway.app/api/datasets/user/${id}`, {
+    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/datasets/user/${id}`, {
       method: 'DELETE',
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -34,7 +34,7 @@ const UserDatasets = () => {
     setEditTitle(currentTitle);
   };
   const saveEdit = async () => {
-    await fetch(`data-marketplace-backend-production.up.railway.app/api/datasets/${editingId}`, {
+    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/datasets/${editingId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const UserDatasets = () => {
   };
 
   const downloadDataset = (id) => {
-    window.open(`data-marketplace-backend-production.up.railway.app/api/download/${id}`, '_blank');
+    window.open(`https://data-marketplace-backend-production.up.railway.app/api/download/${id}`, '_blank');
   };
 
   useEffect(() => {

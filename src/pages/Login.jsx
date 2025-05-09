@@ -19,7 +19,7 @@ const Login = () => {
     setMessage('');
 
     try {
-      const res = await fetch('data-marketplace-backend-production.up.railway.app/api/login', {
+      const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),

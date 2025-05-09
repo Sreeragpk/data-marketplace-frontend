@@ -7,7 +7,7 @@ const Datasets = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`data-marketplace-backend-production.up.railway.app/api/datasets?search=${search}`)
+    fetch(`https://data-marketplace-backend-production.up.railway.app/api/datasets?search=${search}`)
       .then((res) => res.json())
       .then((data) => setDatasets(data));
   }, [search]);

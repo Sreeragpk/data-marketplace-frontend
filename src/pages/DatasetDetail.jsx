@@ -33,8 +33,8 @@ const DatasetDetail = () => {
     const fetchDatasetDetails = async () => {
       try {
         const [datasetRes, statsRes] = await Promise.all([
-          fetch(`data-marketplace-backend-production.up.railway.app/api/datasets/${id}`),
-          fetch(`data-marketplace-backend-production.up.railway.app/api/datasets/${id}/stats`)
+          fetch(`https://data-marketplace-backend-production.up.railway.app/api/datasets/${id}`),
+          fetch(`https://data-marketplace-backend-production.up.railway.app/api/datasets/${id}/stats`)
         ]);
   
         const datasetData = await datasetRes.json();
@@ -74,7 +74,7 @@ const DatasetDetail = () => {
 
     setIsPurchasing(true);
     try {
-      const res = await fetch(`data-marketplace-backend-production.up.railway.app/api/payment/razorpay/${id}`, {
+      const res = await fetch(`https://data-marketplace-backend-production.up.railway.app/api/payment/razorpay/${id}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const DatasetDetail = () => {
     }
 
     try {
-      const res = await fetch(`data-marketplace-backend-production.up.railway.app/api/payment/verify`, {
+      const res = await fetch(`https://data-marketplace-backend-production.up.railway.app/api/payment/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,7 +138,7 @@ const DatasetDetail = () => {
         setMessage('Purchase completed successfully!');
         setIsPaid(true);
 
-        await fetch('data-marketplace-backend-production.up.railway.app/api/purchases/purchase', {
+        await fetch('https://data-marketplace-backend-production.up.railway.app/api/purchases/purchase', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ const DatasetDetail = () => {
 
     setIsDownloading(true);
     window.open(
-      `data-marketplace-backend-production.up.railway.app/api/datasets/${id}/download?userId=${userId}`,
+      `https://data-marketplace-backend-production.up.railway.app/api/datasets/${id}/download?userId=${userId}`,
       '_blank'
     );
     setIsDownloading(false);

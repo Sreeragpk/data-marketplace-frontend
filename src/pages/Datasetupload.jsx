@@ -37,7 +37,7 @@
 
 //     try {
 //       // Sending request with JWT token for authentication
-//       const res = await fetch('data-marketplace-backend-production.up.railway.app/api/datasets', {
+//       const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/datasets', {
 //         method: 'POST',
 //         headers: {
 //           'Authorization': `Bearer ${token}`,
@@ -170,7 +170,7 @@ const DatasetUpload = () => {
 
     try {
       // Sending request with JWT token for authentication
-      const res = await fetch('data-marketplace-backend-production.up.railway.app/api/datasets', {
+      const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/datasets', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

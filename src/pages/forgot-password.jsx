@@ -19,7 +19,7 @@ const ForgotPassword = () => {
     setMessage('');
 
     try {
-      const res = await fetch('data-marketplace-backend-production.up.railway.app/api/forgot-password', {
+      const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

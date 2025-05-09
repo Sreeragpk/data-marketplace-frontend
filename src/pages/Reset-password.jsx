@@ -23,7 +23,7 @@ const ResetPassword = () => {
     e.preventDefault();
 
     try {
-      const res = await fetch("data-marketplace-backend-production.up.railway.app/api/reset-password", {
+      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token, email, newPassword: password }), // Make sure the body contains the correct parameters

@@ -21,7 +21,7 @@ const PurchasedDatasets = () => {
     const fetchPurchases = async () => {
       try {
         const res = await fetch(
-          `data-marketplace-backend-production.up.railway.app/api/purchases/user/${userId}`,
+          `https://data-marketplace-backend-production.up.railway.app/api/purchases/user/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
