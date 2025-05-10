@@ -7,6 +7,7 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // Loader state
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -16,6 +17,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
+    setIsLoading(true); // Start loading
 
     try {
       const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/login', {
@@ -34,16 +36,19 @@ const Login = () => {
         const role = decoded.role;
 
         setMessage('Login successful. Redirecting...');
-
+        
         setTimeout(() => {
+          setIsLoading(false); // Stop loading
           navigate(role === 'admin' ? '/admin/' : '/dashboard');
         }, 1000);
       } else {
         setMessage(data.error || 'Login failed');
+        setIsLoading(false); // Stop loading
       }
     } catch (error) {
       console.error(error);
       setMessage('Login failed due to a network error');
+      setIsLoading(false); // Stop loading
     }
   };
 
@@ -53,6 +58,13 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row items-center justify-center bg-gray-100 px-4 py-8">
+      {/* Loader */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 bg-white bg-opacity-80 flex items-center justify-center">
+          <div className="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+
       {/* Left Side */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-12">
         <div className="text-center space-y-4">
