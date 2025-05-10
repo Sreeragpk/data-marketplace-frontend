@@ -31,20 +31,6 @@ const Home = () => {
           >
             {darkMode ? "🌙" : "☀️"}
           </button>
-          <nav className="space-x-2">
-            <Link
-              to="/Login"
-              className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-teal-400"
-            >
-              Login
-            </Link>
-            <Link
-              to="/Signup"
-              className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 dark:bg-teal-500 dark:hover:bg-teal-600"
-            >
-              Sign Up
-            </Link>
-          </nav>
         </div>
       </header>
 
@@ -58,12 +44,28 @@ const Home = () => {
           <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-8">
             A trusted marketplace for data enthusiasts, researchers, and businesses. Upload, monetize, or access valuable datasets with ease.
           </p>
-          <Link
-            to="/signup"
-            className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 dark:bg-teal-500 dark:hover:bg-teal-600 transition"
-          >
-            Get Started
-          </Link>
+
+          {/* Card for Login/Sign Up */}
+          <div className="max-w-sm mx-auto bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg mt-10 transition-all">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4 text-center">
+              Join the Marketplace
+            </h3>
+
+            <div className="space-y-4">
+              <Link
+                to="/Login"
+                className="w-full inline-flex items-center justify-center bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-medium transition-all hover:bg-blue-700 dark:bg-teal-500 dark:hover:bg-teal-600 hover:scale-105"
+              >
+                <span className="mr-2">🔑</span> Login
+              </Link>
+              <Link
+                to="/Signup"
+                className="w-full inline-flex items-center justify-center bg-gradient-to-r from-blue-600 to-teal-400 text-white px-6 py-3 rounded-lg text-lg font-medium transition-all hover:scale-105 dark:bg-teal-500 dark:hover:bg-teal-600"
+              >
+                <span className="mr-2">✍️</span> Sign Up
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* Features Section */}
@@ -108,6 +110,7 @@ const Home = () => {
 };
 
 export default Home;
+
 
 
 // import { Link } from "react-router-dom";
