@@ -10,7 +10,6 @@ import {
 } from "recharts";
 import {
   FiSearch,
-  FiLogOut,
   FiDatabase,
   FiUsers,
   FiShoppingCart,
@@ -22,7 +21,7 @@ import UserMenu from "./components/UserMenu";
 const AdminDashboard = () => {
   const [datasets, setDatasets] = useState([]);
   const [users, setUsers] = useState([]);
-  const [tab, setTab] = useState("dashboard"); // default tab
+  const [tab, setTab] = useState("dashboard");
   const [error, setError] = useState("");
   const [stats, setStats] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,27 +41,18 @@ const AdminDashboard = () => {
       setError("Failed to load stats");
     }
   };
+
   const fetchRecentPurchases = async () => {
     try {
-      const res = await fetch(
-        "https://data-marketplace-backend-production.up.railway.app/api/admin/recent-purchases",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/recent-purchases", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const data = await res.json();
       setRecentPurchases(data);
     } catch (err) {
       console.error("Failed to fetch recent purchases", err);
     }
   };
-
-  useEffect(() => {
-    fetchStats();
-    fetchRecentPurchases();
-    if (tab === "datasets") fetchDatasets();
-    else if (tab === "users") fetchUsers();
-  }, [tab]);
 
   const fetchDatasets = async () => {
     try {
@@ -71,9 +61,8 @@ const AdminDashboard = () => {
       });
       const data = await res.json();
       setDatasets(data);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch datasets");
-      console.log(err);
     }
   };
 
@@ -84,11 +73,17 @@ const AdminDashboard = () => {
       });
       const data = await res.json();
       setUsers(data);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch users");
-      console.log(err);
     }
   };
+
+  useEffect(() => {
+    fetchStats();
+    fetchRecentPurchases();
+    if (tab === "datasets") fetchDatasets();
+    else if (tab === "users") fetchUsers();
+  }, [tab]);
 
   const deleteDataset = async (id) => {
     if (!window.confirm("Delete this dataset?")) return;
@@ -125,99 +120,75 @@ const AdminDashboard = () => {
     fetchStats();
   };
 
-  const filteredDatasets = datasets.filter((dataset) =>
-    dataset.title.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredDatasets = datasets.filter((ds) =>
+    ds.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const filteredUsers = users.filter((user) => {
-    const matchesSearch =
+    const matchSearch =
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesRole =
-      roleFilter === "all" || user.role.toLowerCase() === roleFilter;
+    const matchRole = roleFilter === "all" || user.role.toLowerCase() === roleFilter;
 
-    return matchesSearch && matchesRole;
+    return matchSearch && matchRole;
   });
-
-  useEffect(() => {
-    if (tab === "datasets") fetchDatasets();
-    else if (tab === "users") fetchUsers();
-    fetchStats();
-  }, [tab]);
-
-  // const handleLogout = () => {
-  //   localStorage.removeItem("token");
-  //   window.location.href = "/login";
-  // };
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* NavBar */}
-      <nav className="bg-blue-600 text-white p-4 flex justify-between items-center shadow-md">
-        <div className="flex space-x-6 items-center">
-          <button
-            onClick={() => setTab("dashboard")}
-            className="hover:text-gray-200 flex items-center space-x-1"
-          >
-            <FiHome /> <span>Dashboard</span>
-          </button>
-          <button
-            onClick={() => setTab("datasets")}
-            className="hover:text-gray-200 flex items-center space-x-1"
-          >
-            <FiDatabase /> <span>Datasets</span>
-          </button>
-          <button
-            onClick={() => setTab("users")}
-            className="hover:text-gray-200 flex items-center space-x-1"
-          >
-            <FiUsers /> <span>Users</span>
-          </button>
-          <button
-            onClick={() => setTab("purchases")}
-            className="hover:text-gray-200 flex items-center space-x-1"
-          >
-            <FiShoppingCart /> <span>Purchase List</span>
-          </button>
+      <nav className="bg-blue-600 text-white p-4 flex flex-wrap justify-between items-center shadow-md gap-4">
+        <div className="flex flex-wrap gap-4">
+          {[
+            ["dashboard", <FiHome />, "Dashboard"],
+            ["datasets", <FiDatabase />, "Datasets"],
+            ["users", <FiUsers />, "Users"],
+            ["purchases", <FiShoppingCart />, "Purchases"],
+          ].map(([key, icon, label]) => (
+            <button
+              key={key}
+              onClick={() => setTab(key)}
+              className="hover:text-gray-200 flex items-center gap-1"
+            >
+              {icon}
+              <span>{label}</span>
+            </button>
+          ))}
         </div>
         <UserMenu />
       </nav>
 
       {/* Page Content */}
-      <div className="p-6 max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 capitalize">{tab}</h1>
+      <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 capitalize">{tab}</h1>
 
-        {/* Dashboard */}
         {tab === "dashboard" && stats && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-            <div className="p-4 bg-blue-100 rounded-lg">
-              <h3 className="text-lg font-semibold">📁 Total Datasets</h3>
-              <p className="text-3xl">{stats.totalDatasets}</p>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
+              <div className="p-4 bg-blue-100 rounded-lg">
+                <h3 className="text-lg font-semibold">📁 Total Datasets</h3>
+                <p className="text-3xl">{stats.totalDatasets}</p>
+              </div>
+              <div className="p-4 bg-green-100 rounded-lg">
+                <h3 className="text-lg font-semibold">👥 Total Users</h3>
+                <p className="text-3xl">{stats.totalUsers}</p>
+              </div>
+              <div className="p-4 bg-yellow-100 rounded-lg col-span-full">
+                <h3 className="text-lg font-semibold mb-2">📈 Uploads Over Time</h3>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={stats.uploadsByDate}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="count" fill="#4C6EB1" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-            <div className="p-4 bg-green-100 rounded-lg">
-              <h3 className="text-lg font-semibold">👥 Total Users</h3>
-              <p className="text-3xl">{stats.totalUsers}</p>
-            </div>
-            <div className="p-4 bg-yellow-100 rounded-lg col-span-full">
-              <h3 className="text-lg font-semibold mb-2">
-                📈 Uploads Over Time
-              </h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={stats.uploadsByDate}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#4C6EB1" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="mt-8 bg-gradient-to-r from-white to-blue-50 rounded-2xl shadow-lg p-6 border border-blue-100">
-              <h2 className="text-2xl font-bold mb-6 text-blue-700 flex items-center gap-2">
-                🛒 Recent Purchases
-              </h2>
 
+            <div className="mt-8 bg-gradient-to-r from-white to-blue-50 rounded-2xl shadow p-6 border border-blue-100">
+              <h2 className="text-2xl font-bold mb-4 text-blue-700">🛒 Recent Purchases</h2>
               {recentPurchases.length === 0 ? (
                 <p className="text-gray-500 italic">No recent purchases yet.</p>
               ) : (
@@ -225,11 +196,11 @@ const AdminDashboard = () => {
                   {recentPurchases.map((purchase) => (
                     <li
                       key={purchase.id}
-                      className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition duration-200 border border-gray-100"
+                      className="bg-white p-4 rounded-xl shadow-sm border border-gray-100"
                     >
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-start flex-col sm:flex-row">
                         <div>
-                          <p className="text-gray-800">
+                          <p>
                             <span className="font-medium text-blue-700">
                               {purchase.buyer_name}
                             </span>{" "}
@@ -242,7 +213,7 @@ const AdminDashboard = () => {
                             {new Date(purchase.purchased_at).toLocaleString()}
                           </p>
                         </div>
-                        <span className="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
+                        <span className="bg-blue-100 text-blue-600 px-3 py-1 mt-2 sm:mt-0 rounded-full text-sm font-medium">
                           New
                         </span>
                       </div>
@@ -251,30 +222,37 @@ const AdminDashboard = () => {
                 </ul>
               )}
             </div>
-          </div>
+          </>
         )}
 
-        {/* Search */}
+        {/* Search and Filter */}
         {(tab === "datasets" || tab === "users") && (
-          <div className="flex mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
             <input
               type="text"
               placeholder={`Search ${tab}...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="p-3 border rounded-lg w-full sm:w-auto flex-1"
             />
-            <button className="p-3 bg-blue-600 text-white rounded-r-lg">
-              <FiSearch className="w-5 h-5" />
-            </button>
+            {tab === "users" && (
+              <select
+                value={roleFilter}
+                onChange={(e) => setRoleFilter(e.target.value)}
+                className="p-3 border rounded-lg bg-white"
+              >
+                <option value="all">All Roles</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+              </select>
+            )}
           </div>
         )}
 
         {/* Dataset Table */}
         {tab === "datasets" && (
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Datasets</h2>
-            <table className="w-full text-left border">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border text-sm">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="p-2">ID</th>
@@ -304,23 +282,10 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* Users Table */}
         {tab === "users" && (
-          <div>
-            {/* Search and Role Filter */}
-            <div className="flex flex-col sm:flex-row sm:items-center mb-6 gap-4">
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="p-3 border rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">All Roles</option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-              </select>
-            </div>
-
-            {/* Users Table */}
-            <table className="w-full text-left border">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border text-sm">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="p-2">ID</th>
@@ -340,20 +305,15 @@ const AdminDashboard = () => {
                     <td className="p-2 space-x-3 flex items-center">
                       <button
                         onClick={() => deleteUser(user.id)}
-                        className="text-red-600 hover:text-red-800"
+                        className="text-red-600"
                         title="Delete User"
                       >
                         <MdDelete className="w-5 h-5" />
                       </button>
-
                       <button
                         onClick={() => toggleRole(user.id, user.role)}
-                        className="text-blue-600 hover:text-blue-800"
-                        title={
-                          user.role === "admin"
-                            ? "Demote to User"
-                            : "Promote to Admin"
-                        }
+                        className="text-blue-600"
+                        title={user.role === "admin" ? "Demote to User" : "Promote to Admin"}
                       >
                         {user.role === "admin" ? (
                           <MdArrowDownward className="w-5 h-5" />
@@ -368,17 +328,15 @@ const AdminDashboard = () => {
             </table>
           </div>
         )}
-        {/* Purchases (Placeholder) */}
+
+        {/* Purchases Placeholder */}
         {tab === "purchases" && (
-          <div className="text-center p-10 text-gray-600">
+          <div className="text-center py-10 text-gray-500">
             <p>🛒 Purchase list will be displayed here!</p>
-            <p className="mt-2 text-sm">
-              [Coming soon - needs API integration]
-            </p>
+            <p className="mt-2 text-sm">[Coming soon - needs API integration]</p>
           </div>
         )}
 
-        {/* Error */}
         {error && <p className="text-red-500 mt-6">{error}</p>}
       </div>
     </div>
