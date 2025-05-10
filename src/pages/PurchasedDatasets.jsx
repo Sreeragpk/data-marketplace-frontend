@@ -42,7 +42,7 @@ const PurchasedDatasets = () => {
 
   const handleDownload = (datasetId) => {
     window.open(
-      `data-marketplace-backend-production.up.railway.app/api/datasets/${datasetId}/download?userId=${userId}`,
+      `https://data-marketplace-backend-production.up.railway.app/api/datasets/${datasetId}/download?userId=${userId}`,
       "_blank"
     );
   };
