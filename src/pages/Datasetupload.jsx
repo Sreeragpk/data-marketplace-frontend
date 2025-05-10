@@ -1,136 +1,5 @@
-// import React, { useState } from 'react';
-
-// const DatasetUpload = () => {
-//   const [file, setFile] = useState(null);
-//   const [title, setTitle] = useState('');
-//   const [description, setDescription] = useState('');
-//   const [price, setPrice] = useState('');
-//   const [error, setError] = useState('');
-//   const [success, setSuccess] = useState('');
-
-//   // Handle file change
-//   const handleFileChange = (e) => {
-//     setFile(e.target.files[0]);
-//   };
-
-//   // Handle form submission
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-
-//     if (!file || !title || !description || !price) {
-//       setError('Please fill all fields and select a file');
-//       return;
-//     }
-
-//     const token = localStorage.getItem('token'); // Retrieve JWT token from storage
-//     if (!token) {
-//       setError('You need to login first');
-//       return;
-//     }
-
-//     // Create FormData object to send the file and other fields
-//     const formData = new FormData();
-//     formData.append('file', file);
-//     formData.append('title', title);
-//     formData.append('description', description);
-//     formData.append('price', price);
-
-//     try {
-//       // Sending request with JWT token for authentication
-//       const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/datasets', {
-//         method: 'POST',
-//         headers: {
-//           'Authorization': `Bearer ${token}`,
-//         },
-//         body: formData, // FormData containing file and other fields
-//       });
-
-//       const data = await res.json();
-
-//       if (res.status === 201) {
-//         setSuccess('Dataset uploaded successfully!');
-//         setError('');
-//       } else {
-//         setError(data.error || 'Error uploading dataset');
-//         setSuccess('');
-//       }
-//     } catch (err) {
-//       console.error(err);
-//       setError('Failed to upload dataset');
-//     }
-//   };
-
-//   return (
-//     <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg">
-//       <h2 className="text-2xl font-semibold text-center mb-6">Upload Dataset</h2>
-
-//       {/* Error/Success message display */}
-//       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-//       {success && <p className="text-green-500 text-center mb-4">{success}</p>}
-
-//       <form onSubmit={handleSubmit} className="space-y-4">
-//         <div>
-//           <label htmlFor="title" className="block text-sm font-medium text-gray-700">Dataset Name</label>
-//           <input
-//             type="text"
-//             id="title"
-//             value={title}
-//             onChange={(e) => setTitle(e.target.value)}
-//             required
-//             className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//           />
-//         </div>
-
-//         <div>
-//           <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-//           <textarea
-//             id="description"
-//             value={description}
-//             onChange={(e) => setDescription(e.target.value)}
-//             required
-//             className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//           ></textarea>
-//         </div>
-
-//         <div>
-//           <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price</label>
-//           <input
-//             type="number"
-//             id="price"
-//             value={price}
-//             onChange={(e) => setPrice(e.target.value)}
-//             required
-//             className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//           />
-//         </div>
-
-//         <div>
-//           <label htmlFor="file" className="block text-sm font-medium text-gray-700">Upload Dataset File</label>
-//           <input
-//             type="file"
-//             id="file"
-//             onChange={handleFileChange}
-//             required
-//             className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//           />
-//         </div>
-//         <button
-//           type="submit"
-//           className="w-full mt-4 py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-//         >
-//           Upload Dataset
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default DatasetUpload;
-
-
-
-
 import React, { useState } from 'react';
+import { FaSpinner } from 'react-icons/fa';
 
 const DatasetUpload = () => {
   const [files, setFiles] = useState([]);
@@ -139,13 +8,13 @@ const DatasetUpload = () => {
   const [price, setPrice] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
-  // Handle file change (including folder upload)
   const handleFileChange = (e) => {
-    setFiles(e.target.files); // Multiple files selected when folder is uploaded
+    setFiles(e.target.files);
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -154,55 +23,85 @@ const DatasetUpload = () => {
       return;
     }
 
-    const token = localStorage.getItem('token'); // Retrieve JWT token from storage
+    const token = localStorage.getItem('token');
     if (!token) {
       setError('You need to login first');
       return;
     }
 
-    // Create FormData object to send the file(s) and other fields
     const formData = new FormData();
-    Array.from(files).forEach((file) => formData.append('files', file)); // Append each file
-
+    Array.from(files).forEach((file) => formData.append('files', file));
     formData.append('title', title);
     formData.append('description', description);
     formData.append('price', price);
 
     try {
-      // Sending request with JWT token for authentication
-      const res = await fetch('https://data-marketplace-backend-production.up.railway.app/api/datasets', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData, // FormData containing files and other fields
-      });
+      setIsUploading(true);
+      setUploadProgress(0);
+      setError('');
+      setSuccess('');
 
-      const data = await res.json();
+      const xhr = new XMLHttpRequest();
 
-      if (res.status === 201) {
-        setSuccess('Dataset uploaded successfully!');
-        setError('');
-      } else {
-        setError(data.error || 'Error uploading dataset');
-        setSuccess('');
-      }
+      xhr.open('POST', 'https://data-marketplace-backend-production.up.railway.app/api/datasets', true);
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          setUploadProgress(percent);
+        }
+      };
+
+      xhr.onload = () => {
+        setIsUploading(false);
+        if (xhr.status === 201) {
+          setSuccess('Dataset uploaded successfully!');
+          setTitle('');
+          setDescription('');
+          setPrice('');
+          setFiles([]);
+        } else {
+          const response = JSON.parse(xhr.responseText);
+          setError(response.error || 'Upload failed');
+        }
+      };
+
+      xhr.onerror = () => {
+        setIsUploading(false);
+        setError('Upload failed due to a network error');
+      };
+
+      xhr.send(formData);
     } catch (err) {
       console.error(err);
+      setIsUploading(false);
       setError('Failed to upload dataset');
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-300">
+    <div className="relative max-w-lg mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-300">
+      {/* Uploading overlay */}
+      {isUploading && (
+        <div className="absolute inset-0 bg-white bg-opacity-80 z-10 flex flex-col items-center justify-center rounded-lg">
+          <FaSpinner className="animate-spin text-indigo-600 text-4xl mb-3" />
+          <p className="text-gray-700 font-medium mb-2">Uploading... {uploadProgress}%</p>
+          <div className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
+            <div
+              className="bg-indigo-600 h-full transition-all"
+              style={{ width: `${uploadProgress}%` }}
+            ></div>
+          </div>
+        </div>
+      )}
+
       <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Upload Dataset</h2>
 
-      {/* Error/Success message display */}
       {error && <p className="text-red-500 text-center mb-4">{error}</p>}
       {success && <p className="text-green-500 text-center mb-4">{success}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Dataset Title */}
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">Dataset Name</label>
           <input
@@ -211,11 +110,11 @@ const DatasetUpload = () => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled={isUploading}
+            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg"
           />
         </div>
 
-        {/* Description */}
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
           <textarea
@@ -223,12 +122,12 @@ const DatasetUpload = () => {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
-            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled={isUploading}
+            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg"
             rows="4"
           ></textarea>
         </div>
 
-        {/* Price */}
         <div>
           <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price (₹)</label>
           <input
@@ -237,11 +136,11 @@ const DatasetUpload = () => {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             required
-            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled={isUploading}
+            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg"
           />
         </div>
 
-        {/* File Upload */}
         <div>
           <label htmlFor="file" className="block text-sm font-medium text-gray-700">Upload Dataset File</label>
           <input
@@ -249,16 +148,17 @@ const DatasetUpload = () => {
             id="file"
             onChange={handleFileChange}
             required
-            multiple // Allow multiple files from folder
-            webkitdirectory // Allow folder upload
-            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            multiple
+            webkitdirectory="true"
+            disabled={isUploading}
+            className="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-lg"
           />
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full mt-6 py-3 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          disabled={isUploading}
+          className="w-full mt-6 py-3 px-4 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none disabled:opacity-60"
         >
           Upload Dataset
         </button>
@@ -268,4 +168,3 @@ const DatasetUpload = () => {
 };
 
 export default DatasetUpload;
-
