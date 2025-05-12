@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Spinner from './components/Spinner';
+
 
 const Signup = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -49,6 +51,8 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gray-100 px-4 py-10">
+      {isLoading && <Spinner />}
+
       {/* Left Side Content */}
       <div className="w-full md:w-1/2 mb-10 md:mb-0 md:pr-12 space-y-6 text-center md:text-left">
         <div>

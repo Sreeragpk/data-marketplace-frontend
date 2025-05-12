@@ -18,6 +18,7 @@ import {
 import { MdArrowDownward, MdArrowUpward, MdDelete } from "react-icons/md";
 import UserMenu from "./components/UserMenu";
 
+
 const AdminDashboard = () => {
   const [datasets, setDatasets] = useState([]);
   const [users, setUsers] = useState([]);
@@ -27,14 +28,18 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [recentPurchases, setRecentPurchases] = useState([]);
+  
 
   const token = localStorage.getItem("token");
 
   const fetchStats = async () => {
     try {
-      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/stats", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://data-marketplace-backend-production.up.railway.app/api/admin/stats",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       setStats(data);
     } catch {
@@ -44,9 +49,12 @@ const AdminDashboard = () => {
 
   const fetchRecentPurchases = async () => {
     try {
-      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/recent-purchases", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://data-marketplace-backend-production.up.railway.app/api/admin/recent-purchases",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       setRecentPurchases(data);
     } catch (err) {
@@ -56,9 +64,12 @@ const AdminDashboard = () => {
 
   const fetchDatasets = async () => {
     try {
-      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/datasets", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://data-marketplace-backend-production.up.railway.app/api/admin/datasets",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       setDatasets(data);
     } catch {
@@ -68,9 +79,12 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://data-marketplace-backend-production.up.railway.app/api/admin/users",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const data = await res.json();
       setUsers(data);
     } catch {
@@ -87,19 +101,25 @@ const AdminDashboard = () => {
 
   const deleteDataset = async (id) => {
     if (!window.confirm("Delete this dataset?")) return;
-    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/admin/datasets/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await fetch(
+      `https://data-marketplace-backend-production.up.railway.app/api/admin/datasets/${id}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     fetchDatasets();
   };
 
   const deleteUser = async (id) => {
     if (!window.confirm("Delete this user?")) return;
-    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/admin/users/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await fetch(
+      `https://data-marketplace-backend-production.up.railway.app/api/admin/users/${id}`,
+      {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     fetchUsers();
   };
 
@@ -107,14 +127,17 @@ const AdminDashboard = () => {
     const newRole = currentRole === "admin" ? "user" : "admin";
     if (!window.confirm(`Change role to ${newRole}?`)) return;
 
-    await fetch(`https://data-marketplace-backend-production.up.railway.app/api/admin/users/${id}/role`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ role: newRole }),
-    });
+    await fetch(
+      `https://data-marketplace-backend-production.up.railway.app/api/admin/users/${id}/role`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role: newRole }),
+      }
+    );
 
     fetchUsers();
     fetchStats();
@@ -129,7 +152,8 @@ const AdminDashboard = () => {
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchRole = roleFilter === "all" || user.role.toLowerCase() === roleFilter;
+    const matchRole =
+      roleFilter === "all" || user.role.toLowerCase() === roleFilter;
 
     return matchSearch && matchRole;
   });
@@ -137,30 +161,41 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* NavBar */}
-      <nav className="bg-blue-600 text-white p-4 flex flex-wrap justify-between items-center shadow-md gap-4">
-        <div className="flex flex-wrap gap-4">
-          {[
-            ["dashboard", <FiHome />, "Dashboard"],
-            ["datasets", <FiDatabase />, "Datasets"],
-            ["users", <FiUsers />, "Users"],
-            ["purchases", <FiShoppingCart />, "Purchases"],
-          ].map(([key, icon, label]) => (
-            <button
-              key={key}
-              onClick={() => setTab(key)}
-              className="hover:text-gray-200 flex items-center gap-1"
-            >
-              {icon}
-              <span>{label}</span>
-            </button>
-          ))}
+      <nav className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-4 flex flex-wrap justify-between items-center shadow-lg">
+        <div className="flex items-center gap-4">
+          <span className="text-xl font-bold tracking-wide">
+            📊 Admin Panel
+          </span>
+          <div className="flex gap-3 ml-4">
+            {[
+              ["dashboard", <FiHome />, "Dashboard"],
+              ["datasets", <FiDatabase />, "Datasets"],
+              ["users", <FiUsers />, "Users"],
+              ["purchases", <FiShoppingCart />, "Purchases"],
+            ].map(([key, icon, label]) => (
+              <button
+                key={key}
+                onClick={() => setTab(key)}
+                className={`flex items-center gap-1 px-3 py-2 rounded-full transition-all duration-200 ${
+                  tab === key
+                    ? "bg-white text-blue-700 font-semibold shadow"
+                    : "hover:bg-white hover:text-blue-700"
+                }`}
+              >
+                {icon}
+                <span className="hidden sm:inline">{label}</span>
+              </button>
+            ))}
+          </div>
         </div>
         <UserMenu />
       </nav>
 
       {/* Page Content */}
       <div className="p-4 sm:p-6 max-w-7xl mx-auto">
-        <h1 className="text-2xl sm:text-3xl font-bold mb-6 capitalize">{tab}</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 capitalize">
+          {tab}
+        </h1>
 
         {tab === "dashboard" && stats && (
           <>
@@ -174,7 +209,9 @@ const AdminDashboard = () => {
                 <p className="text-3xl">{stats.totalUsers}</p>
               </div>
               <div className="p-4 bg-yellow-100 rounded-lg col-span-full">
-                <h3 className="text-lg font-semibold mb-2">📈 Uploads Over Time</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  📈 Uploads Over Time
+                </h3>
                 <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={stats.uploadsByDate}>
                     <CartesianGrid strokeDasharray="3 3" />
@@ -188,7 +225,9 @@ const AdminDashboard = () => {
             </div>
 
             <div className="mt-8 bg-gradient-to-r from-white to-blue-50 rounded-2xl shadow p-6 border border-blue-100">
-              <h2 className="text-2xl font-bold mb-4 text-blue-700">🛒 Recent Purchases</h2>
+              <h2 className="text-2xl font-bold mb-4 text-blue-700">
+                🛒 Recent Purchases
+              </h2>
               {recentPurchases.length === 0 ? (
                 <p className="text-gray-500 italic">No recent purchases yet.</p>
               ) : (
@@ -251,89 +290,105 @@ const AdminDashboard = () => {
 
         {/* Dataset Table */}
         {tab === "datasets" && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border text-sm">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="p-2">ID</th>
-                  <th className="p-2">Title</th>
-                  <th className="p-2">Uploaded By</th>
-                  <th className="p-2">Actions</th>
+        <div className="overflow-x-auto rounded-lg shadow-md bg-white">
+          <table className="w-full text-sm text-left text-gray-700">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-3 font-semibold">ID</th>
+                <th className="px-4 py-3 font-semibold">Title</th>
+                <th className="px-4 py-3 font-semibold">Uploaded By</th>
+                <th className="px-4 py-3 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredDatasets.map((ds) => (
+                <tr
+                  key={ds.id}
+                  className="hover:bg-gray-50 transition-colors border-t border-gray-100"
+                >
+                  <td className="px-4 py-2">{ds.id}</td>
+                  <td className="px-4 py-2">{ds.title}</td>
+                  <td className="px-4 py-2">{ds.uploaded_by}</td>
+                  <td className="px-4 py-2">
+                    <button
+                      onClick={() => deleteDataset(ds.id)}
+                      className="text-red-600 hover:text-red-800 hover:underline transition"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredDatasets.map((ds) => (
-                  <tr key={ds.id} className="border-t">
-                    <td className="p-2">{ds.id}</td>
-                    <td className="p-2">{ds.title}</td>
-                    <td className="p-2">{ds.uploaded_by}</td>
-                    <td className="p-2">
-                      <button
-                        onClick={() => deleteDataset(ds.id)}
-                        className="text-red-600 hover:underline"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
-        {/* Users Table */}
-        {tab === "users" && (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border text-sm">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="p-2">ID</th>
-                  <th className="p-2">Name</th>
-                  <th className="p-2">Email</th>
-                  <th className="p-2">Role</th>
-                  <th className="p-2">Actions</th>
+ {/* Users Table */}
+      {tab === "users" && (
+        <div className="overflow-x-auto rounded-lg shadow-md bg-white mt-6">
+          <table className="w-full text-sm text-left text-gray-700">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-4 py-3 font-semibold">ID</th>
+                <th className="px-4 py-3 font-semibold">Name</th>
+                <th className="px-4 py-3 font-semibold">Email</th>
+                <th className="px-4 py-3 font-semibold">Role</th>
+                <th className="px-4 py-3 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredUsers.map((user) => (
+                <tr
+                  key={user.id}
+                  className="hover:bg-gray-50 transition-colors border-t border-gray-100"
+                >
+                  <td className="px-4 py-2">{user.id}</td>
+                  <td className="px-4 py-2">{user.name}</td>
+                  <td className="px-4 py-2">{user.email}</td>
+                  <td className="px-4 py-2 capitalize">
+                    <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
+                      {user.role}
+                    </span>
+                  </td>
+                  <td className="px-4 py-2 flex items-center gap-3">
+                    <button
+                      onClick={() => deleteUser(user.id)}
+                      className="text-red-500 hover:text-red-700"
+                      title="Delete User"
+                    >
+                      <MdDelete className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => toggleRole(user.id, user.role)}
+                      className="text-blue-500 hover:text-blue-700"
+                      title={
+                        user.role === "admin"
+                          ? "Demote to User"
+                          : "Promote to Admin"
+                      }
+                    >
+                      {user.role === "admin" ? (
+                        <MdArrowDownward className="w-5 h-5" />
+                      ) : (
+                        <MdArrowUpward className="w-5 h-5" />
+                      )}
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredUsers.map((user) => (
-                  <tr key={user.id} className="border-t">
-                    <td className="p-2">{user.id}</td>
-                    <td className="p-2">{user.name}</td>
-                    <td className="p-2">{user.email}</td>
-                    <td className="p-2 capitalize">{user.role}</td>
-                    <td className="p-2 space-x-3 flex items-center">
-                      <button
-                        onClick={() => deleteUser(user.id)}
-                        className="text-red-600"
-                        title="Delete User"
-                      >
-                        <MdDelete className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => toggleRole(user.id, user.role)}
-                        className="text-blue-600"
-                        title={user.role === "admin" ? "Demote to User" : "Promote to Admin"}
-                      >
-                        {user.role === "admin" ? (
-                          <MdArrowDownward className="w-5 h-5" />
-                        ) : (
-                          <MdArrowUpward className="w-5 h-5" />
-                        )}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
         {/* Purchases Placeholder */}
         {tab === "purchases" && (
           <div className="text-center py-10 text-gray-500">
             <p>🛒 Purchase list will be displayed here!</p>
-            <p className="mt-2 text-sm">[Coming soon - needs API integration]</p>
+            <p className="mt-2 text-sm">
+              [Coming soon - needs API integration]
+            </p>
           </div>
         )}
 
