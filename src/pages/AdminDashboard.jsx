@@ -265,34 +265,49 @@ const AdminDashboard = () => {
         )}
 
         {/* Search and Filter */}
-        {(tab === "datasets" || tab === "users") && (
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6">
-            <input
-              type="text"
-              placeholder={`Search ${tab}...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="p-3 border rounded-lg w-full sm:w-auto flex-1"
-            />
-            {tab === "users" && (
-              <select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-                className="p-3 border rounded-lg bg-white"
-              >
-                <option value="all">All Roles</option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-              </select>
-            )}
-          </div>
-        )}
+     {(tab === "datasets" || tab === "users") && (
+  <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 mt-10">
+    <input
+      type="text"
+      placeholder={`Search ${tab}...`}
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="p-3 border border-gray-300 rounded-xl w-full sm:w-auto flex-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+   {tab === "users" && (
+  <div className="relative">
+    <select
+      value={roleFilter}
+      onChange={(e) => setRoleFilter(e.target.value)}
+      className="appearance-none w-full sm:w-48 px-4 py-3 pr-10 border border-gray-300 text-gray-700 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+    >
+      <option value="all">All Roles</option>
+      <option value="admin">Admin</option>
+      <option value="user">User</option>
+    </select>
+    {/* Chevron Icon */}
+    <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500">
+      <svg
+        className="w-5 h-5"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        viewBox="0 0 24 24"
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </div>
+)}
 
-        {/* Dataset Table */}
-        {tab === "datasets" && (
+  </div>
+)}
+
+      {/* Dataset Table */}
+      {tab === "datasets" && (
         <div className="overflow-x-auto rounded-lg shadow-md bg-white">
           <table className="w-full text-sm text-left text-gray-700">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-blue-50 border-b border-blue-100 text-blue-900">
               <tr>
                 <th className="px-4 py-3 font-semibold">ID</th>
                 <th className="px-4 py-3 font-semibold">Title</th>
@@ -301,10 +316,12 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredDatasets.map((ds) => (
+              {filteredDatasets.map((ds, index) => (
                 <tr
                   key={ds.id}
-                  className="hover:bg-gray-50 transition-colors border-t border-gray-100"
+                  className={`${
+                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  } hover:bg-gray-100 transition-colors border-t border-gray-100`}
                 >
                   <td className="px-4 py-2">{ds.id}</td>
                   <td className="px-4 py-2">{ds.title}</td>
@@ -312,7 +329,7 @@ const AdminDashboard = () => {
                   <td className="px-4 py-2">
                     <button
                       onClick={() => deleteDataset(ds.id)}
-                      className="text-red-600 hover:text-red-800 hover:underline transition"
+                      className="text-red-600 hover:text-red-800 hover:underline transition font-medium"
                     >
                       Delete
                     </button>
@@ -324,11 +341,11 @@ const AdminDashboard = () => {
         </div>
       )}
 
- {/* Users Table */}
+      {/* Users Table */}
       {tab === "users" && (
         <div className="overflow-x-auto rounded-lg shadow-md bg-white mt-6">
           <table className="w-full text-sm text-left text-gray-700">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-green-50 border-b border-green-100 text-green-900">
               <tr>
                 <th className="px-4 py-3 font-semibold">ID</th>
                 <th className="px-4 py-3 font-semibold">Name</th>
@@ -338,30 +355,38 @@ const AdminDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.map((user) => (
+              {filteredUsers.map((user, index) => (
                 <tr
                   key={user.id}
-                  className="hover:bg-gray-50 transition-colors border-t border-gray-100"
+                  className={`${
+                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  } hover:bg-gray-100 transition-colors border-t border-gray-100`}
                 >
                   <td className="px-4 py-2">{user.id}</td>
                   <td className="px-4 py-2">{user.name}</td>
                   <td className="px-4 py-2">{user.email}</td>
                   <td className="px-4 py-2 capitalize">
-                    <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
+                    <span
+                      className={`px-2 py-1 text-xs font-medium rounded ${
+                        user.role === "admin"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
                       {user.role}
                     </span>
                   </td>
                   <td className="px-4 py-2 flex items-center gap-3">
                     <button
                       onClick={() => deleteUser(user.id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 transition"
                       title="Delete User"
                     >
                       <MdDelete className="w-5 h-5" />
                     </button>
                     <button
                       onClick={() => toggleRole(user.id, user.role)}
-                      className="text-blue-500 hover:text-blue-700"
+                      className="text-blue-500 hover:text-blue-700 transition"
                       title={
                         user.role === "admin"
                           ? "Demote to User"
