@@ -28,9 +28,42 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [recentPurchases, setRecentPurchases] = useState([]);
-  
+  const [purchases, setPurchases] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const token = localStorage.getItem("token");
+
+useEffect(() => {
+  const fetchPurchases = async () => {
+    if (tab !== "purchases") return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/purchases", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to fetch purchases");
+      }
+
+      const data = await res.json();
+      setPurchases(data);
+    } catch (err) {
+      setError(err.message || "Error fetching purchase data.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPurchases();
+}, [tab]);
+
+
 
   const fetchStats = async () => {
     try {
@@ -407,15 +440,49 @@ const AdminDashboard = () => {
         </div>
       )}
 
-        {/* Purchases Placeholder */}
-        {tab === "purchases" && (
-          <div className="text-center py-10 text-gray-500">
-            <p>🛒 Purchase list will be displayed here!</p>
-            <p className="mt-2 text-sm">
-              [Coming soon - needs API integration]
-            </p>
-          </div>
+       {tab === "purchases" && (
+  <div className="p-4">
+    <h2 className="text-2xl font-semibold mb-4 text-center text-gray-700">
+      🛒 All Purchases
+    </h2>
+
+    {loading ? (
+      <div className="text-center text-gray-500">Loading...</div>
+    ) : error ? (
+      <div className="text-center text-red-500">{error}</div>
+    ) : (
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
+          <thead className="bg-gray-100 text-gray-700">
+            <tr>
+              <th className="py-2 px-4 border">#</th>
+              <th className="py-2 px-4 border">User Email</th>
+              <th className="py-2 px-4 border">Dataset</th>
+              <th className="py-2 px-4 border">Dataset ID</th>
+              <th className="py-2 px-4 border">Purchased At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {purchases.map((purchase, index) => (
+              <tr key={purchase.id} className="text-center">
+                <td className="py-2 px-4 border">{index + 1}</td>
+                <td className="py-2 px-4 border">{purchase.email}</td>
+                <td className="py-2 px-4 border">{purchase.dataset_title}</td>
+                <td className="py-2 px-4 border">{purchase.dataset_id}</td>
+                <td className="py-2 px-4 border">
+                  {new Date(purchase.purchased_at).toLocaleString()}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        {purchases.length === 0 && (
+          <p className="text-center text-gray-500 mt-4">No purchases found.</p>
         )}
+      </div>
+    )}
+  </div>
+)}
 
         {error && <p className="text-red-500 mt-6">{error}</p>}
       </div>
