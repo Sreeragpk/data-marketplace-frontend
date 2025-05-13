@@ -445,9 +445,6 @@ const AdminDashboard = () => {
 
         {tab === "purchases" && (
           <div className="p-4">
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
-              🛒 All Purchases
-            </h2>
 
             {loading ? (
               <div className="text-center text-gray-500">Loading...</div>
