@@ -18,7 +18,6 @@ import {
 import { MdArrowDownward, MdArrowUpward, MdDelete } from "react-icons/md";
 import UserMenu from "./components/UserMenu";
 
-
 const AdminDashboard = () => {
   const [datasets, setDatasets] = useState([]);
   const [users, setUsers] = useState([]);
@@ -33,37 +32,38 @@ const AdminDashboard = () => {
 
   const token = localStorage.getItem("token");
 
-useEffect(() => {
-  const fetchPurchases = async () => {
-    if (tab !== "purchases") return;
+  useEffect(() => {
+    const fetchPurchases = async () => {
+      if (tab !== "purchases") return;
 
-    setLoading(true);
-    setError("");
+      setLoading(true);
+      setError("");
 
-    try {
-      const res = await fetch("https://data-marketplace-backend-production.up.railway.app/api/admin/purchases", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      try {
+        const res = await fetch(
+          "https://data-marketplace-backend-production.up.railway.app/api/admin/purchases",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch purchases");
+        if (!res.ok) {
+          throw new Error("Failed to fetch purchases");
+        }
+
+        const data = await res.json();
+        setPurchases(data);
+      } catch (err) {
+        setError(err.message || "Error fetching purchase data.");
+      } finally {
+        setLoading(false);
       }
+    };
 
-      const data = await res.json();
-      setPurchases(data);
-    } catch (err) {
-      setError(err.message || "Error fetching purchase data.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  fetchPurchases();
-}, [tab]);
-
-
+    fetchPurchases();
+  }, [tab]);
 
   const fetchStats = async () => {
     try {
@@ -298,191 +298,216 @@ useEffect(() => {
         )}
 
         {/* Search and Filter */}
-     {(tab === "datasets" || tab === "users") && (
-  <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 mt-10">
-    <input
-      type="text"
-      placeholder={`Search ${tab}...`}
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      className="p-3 border border-gray-300 rounded-xl w-full sm:w-auto flex-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-   {tab === "users" && (
-  <div className="relative">
-    <select
-      value={roleFilter}
-      onChange={(e) => setRoleFilter(e.target.value)}
-      className="appearance-none w-full sm:w-48 px-4 py-3 pr-10 border border-gray-300 text-gray-700 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-    >
-      <option value="all">All Roles</option>
-      <option value="admin">Admin</option>
-      <option value="user">User</option>
-    </select>
-    {/* Chevron Icon */}
-    <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500">
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        viewBox="0 0 24 24"
-      >
-        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
-    </div>
-  </div>
-)}
-
-  </div>
-)}
-
-      {/* Dataset Table */}
-      {tab === "datasets" && (
-        <div className="overflow-x-auto rounded-lg shadow-md bg-white">
-          <table className="w-full text-sm text-left text-gray-700">
-            <thead className="bg-blue-50 border-b border-blue-100 text-blue-900">
-              <tr>
-                <th className="px-4 py-3 font-semibold">ID</th>
-                <th className="px-4 py-3 font-semibold">Title</th>
-                <th className="px-4 py-3 font-semibold">Uploaded By</th>
-                <th className="px-4 py-3 font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredDatasets.map((ds, index) => (
-                <tr
-                  key={ds.id}
-                  className={`${
-                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } hover:bg-gray-100 transition-colors border-t border-gray-100`}
+        {(tab === "datasets" || tab === "users") && (
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 mt-10">
+            <input
+              type="text"
+              placeholder={`Search ${tab}...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="p-3 border border-gray-300 rounded-xl w-full sm:w-auto flex-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {tab === "users" && (
+              <div className="relative">
+                <select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="appearance-none w-full sm:w-48 px-4 py-3 pr-10 border border-gray-300 text-gray-700 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 >
-                  <td className="px-4 py-2">{ds.id}</td>
-                  <td className="px-4 py-2">{ds.title}</td>
-                  <td className="px-4 py-2">{ds.uploaded_by}</td>
-                  <td className="px-4 py-2">
-                    <button
-                      onClick={() => deleteDataset(ds.id)}
-                      className="text-red-600 hover:text-red-800 hover:underline transition font-medium"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Users Table */}
-      {tab === "users" && (
-        <div className="overflow-x-auto rounded-lg shadow-md bg-white mt-6">
-          <table className="w-full text-sm text-left text-gray-700">
-            <thead className="bg-green-50 border-b border-green-100 text-green-900">
-              <tr>
-                <th className="px-4 py-3 font-semibold">ID</th>
-                <th className="px-4 py-3 font-semibold">Name</th>
-                <th className="px-4 py-3 font-semibold">Email</th>
-                <th className="px-4 py-3 font-semibold">Role</th>
-                <th className="px-4 py-3 font-semibold">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((user, index) => (
-                <tr
-                  key={user.id}
-                  className={`${
-                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  } hover:bg-gray-100 transition-colors border-t border-gray-100`}
-                >
-                  <td className="px-4 py-2">{user.id}</td>
-                  <td className="px-4 py-2">{user.name}</td>
-                  <td className="px-4 py-2">{user.email}</td>
-                  <td className="px-4 py-2 capitalize">
-                    <span
-                      className={`px-2 py-1 text-xs font-medium rounded ${
-                        user.role === "admin"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-200 text-gray-700"
-                      }`}
-                    >
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 flex items-center gap-3">
-                    <button
-                      onClick={() => deleteUser(user.id)}
-                      className="text-red-500 hover:text-red-700 transition"
-                      title="Delete User"
-                    >
-                      <MdDelete className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => toggleRole(user.id, user.role)}
-                      className="text-blue-500 hover:text-blue-700 transition"
-                      title={
-                        user.role === "admin"
-                          ? "Demote to User"
-                          : "Promote to Admin"
-                      }
-                    >
-                      {user.role === "admin" ? (
-                        <MdArrowDownward className="w-5 h-5" />
-                      ) : (
-                        <MdArrowUpward className="w-5 h-5" />
-                      )}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-       {tab === "purchases" && (
-  <div className="p-4">
-    <h2 className="text-2xl font-semibold mb-4 text-center text-gray-700">
-      🛒 All Purchases
-    </h2>
-
-    {loading ? (
-      <div className="text-center text-gray-500">Loading...</div>
-    ) : error ? (
-      <div className="text-center text-red-500">{error}</div>
-    ) : (
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 rounded-md shadow-sm">
-          <thead className="bg-gray-100 text-gray-700">
-            <tr>
-              <th className="py-2 px-4 border">#</th>
-              <th className="py-2 px-4 border">User Email</th>
-              <th className="py-2 px-4 border">Dataset</th>
-              <th className="py-2 px-4 border">Dataset ID</th>
-              <th className="py-2 px-4 border">Purchased At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {purchases.map((purchase, index) => (
-              <tr key={purchase.id} className="text-center">
-                <td className="py-2 px-4 border">{index + 1}</td>
-                <td className="py-2 px-4 border">{purchase.email}</td>
-                <td className="py-2 px-4 border">{purchase.dataset_title}</td>
-                <td className="py-2 px-4 border">{purchase.dataset_id}</td>
-                <td className="py-2 px-4 border">
-                  {new Date(purchase.purchased_at).toLocaleString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {purchases.length === 0 && (
-          <p className="text-center text-gray-500 mt-4">No purchases found.</p>
+                  <option value="all">All Roles</option>
+                  <option value="admin">Admin</option>
+                  <option value="user">User</option>
+                </select>
+                {/* Chevron Icon */}
+                <div className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-500">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            )}
+          </div>
         )}
-      </div>
-    )}
-  </div>
-)}
+
+        {/* Dataset Table */}
+        {tab === "datasets" && (
+          <div className="overflow-x-auto rounded-lg shadow-md bg-white">
+            <table className="w-full text-sm text-left text-gray-700">
+              <thead className="bg-blue-50 border-b border-blue-100 text-blue-900">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">ID</th>
+                  <th className="px-4 py-3 font-semibold">Title</th>
+                  <th className="px-4 py-3 font-semibold">Uploaded By</th>
+                  <th className="px-4 py-3 font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredDatasets.map((ds, index) => (
+                  <tr
+                    key={ds.id}
+                    className={`${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } hover:bg-gray-100 transition-colors border-t border-gray-100`}
+                  >
+                    <td className="px-4 py-2">{ds.id}</td>
+                    <td className="px-4 py-2">{ds.title}</td>
+                    <td className="px-4 py-2">{ds.uploaded_by}</td>
+                    <td className="px-4 py-2">
+                      <button
+                        onClick={() => deleteDataset(ds.id)}
+                        className="text-red-600 hover:text-red-800 hover:underline transition font-medium"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Users Table */}
+        {tab === "users" && (
+          <div className="overflow-x-auto rounded-lg shadow-md bg-white mt-6">
+            <table className="w-full text-sm text-left text-gray-700">
+              <thead className="bg-green-50 border-b border-green-100 text-green-900">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">ID</th>
+                  <th className="px-4 py-3 font-semibold">Name</th>
+                  <th className="px-4 py-3 font-semibold">Email</th>
+                  <th className="px-4 py-3 font-semibold">Role</th>
+                  <th className="px-4 py-3 font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user, index) => (
+                  <tr
+                    key={user.id}
+                    className={`${
+                      index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    } hover:bg-gray-100 transition-colors border-t border-gray-100`}
+                  >
+                    <td className="px-4 py-2">{user.id}</td>
+                    <td className="px-4 py-2">{user.name}</td>
+                    <td className="px-4 py-2">{user.email}</td>
+                    <td className="px-4 py-2 capitalize">
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded ${
+                          user.role === "admin"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-200 text-gray-700"
+                        }`}
+                      >
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2 flex items-center gap-3">
+                      <button
+                        onClick={() => deleteUser(user.id)}
+                        className="text-red-500 hover:text-red-700 transition"
+                        title="Delete User"
+                      >
+                        <MdDelete className="w-5 h-5" />
+                      </button>
+                      <button
+                        onClick={() => toggleRole(user.id, user.role)}
+                        className="text-blue-500 hover:text-blue-700 transition"
+                        title={
+                          user.role === "admin"
+                            ? "Demote to User"
+                            : "Promote to Admin"
+                        }
+                      >
+                        {user.role === "admin" ? (
+                          <MdArrowDownward className="w-5 h-5" />
+                        ) : (
+                          <MdArrowUpward className="w-5 h-5" />
+                        )}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {tab === "purchases" && (
+          <div className="p-4">
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+              🛒 All Purchases
+            </h2>
+
+            {loading ? (
+              <div className="text-center text-gray-500">Loading...</div>
+            ) : error ? (
+              <div className="text-center text-red-500">{error}</div>
+            ) : (
+              <div className="overflow-x-auto rounded-lg shadow">
+                <table className="min-w-full bg-white border border-gray-200 text-sm sm:text-base">
+                  <thead className="bg-indigo-50 text-indigo-800">
+                    <tr>
+                      <th className="px-4 py-3 font-semibold border">#</th>
+                      <th className="px-4 py-3 font-semibold border text-left">
+                        User Email
+                      </th>
+                      <th className="px-4 py-3 font-semibold border text-left">
+                        Dataset
+                      </th>
+                      <th className="px-4 py-3 font-semibold border">
+                        Dataset ID
+                      </th>
+                      <th className="px-4 py-3 font-semibold border">
+                        Purchased At
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {purchases.map((purchase, index) => (
+                      <tr
+                        key={purchase.id}
+                        className={`${
+                          index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                        } hover:bg-gray-100 transition`}
+                      >
+                        <td className="px-4 py-3 text-center border">
+                          {index + 1}
+                        </td>
+                        <td className="px-4 py-3 border">{purchase.email}</td>
+                        <td className="px-4 py-3 border">
+                          {purchase.dataset_title}
+                        </td>
+                        <td className="px-4 py-3 text-center border">
+                          {purchase.dataset_id}
+                        </td>
+                        <td className="px-4 py-3 text-center border">
+                          {new Date(purchase.purchased_at).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {purchases.length === 0 && (
+                  <p className="text-center text-gray-500 mt-4">
+                    No purchases found.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {error && <p className="text-red-500 mt-6">{error}</p>}
       </div>
